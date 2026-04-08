@@ -3,7 +3,21 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 )
+
+func processText(input string) string {
+	words := strings.Fields(input)
+	var result []string
+
+	for _, word := range words {
+		if word == "(up)" {
+		} else {
+			result = append(result, word)
+		}
+	}
+	return strings.Join(result, " ")
+}
 
 func main() {
 	if len(os.Args) != 3 {
