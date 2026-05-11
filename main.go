@@ -3,42 +3,36 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 )
 
-func processText(input string) string {
-	words := strings.Fields(input)
-	var result []string
-
-	for _, word := range words {
-		if word == "(up)" {
-		} else {
-			result = append(result, word)
-		}
-	}
-	return strings.Join(result, " ")
-}
-
 func main() {
+	// 1. Проверка на правильный запуск
 	if len(os.Args) != 3 {
-		fmt.Println("error")
+		fmt.Println("❌ Ошибка: Неверное количество аргументов.")
+		fmt.Println("💡 Как запустить: go run . input.txt output.txt")
 		return
-
 	}
+
 	inputFile := os.Args[1]
 	outputFile := os.Args[2]
 
+	// 2. Проверка на ошибку чтения (например, файла не существует)
 	data, err := os.ReadFile(inputFile)
 	if err != nil {
-		fmt.Println("error", err)
+		fmt.Printf("❌ Ошибка: Не удалось прочитать файл '%s'. Проверь, существует ли он!\n", inputFile)
 		return
 	}
-	text := string(data)
 
-	fmt.Println(text)
-	err = os.WriteFile(outputFile, []byte(text), 0o644)
+	// Отправляем текст на обработку (в process.go)
+	modifiedText := processText(string(data))
+	
+	// 3. Проверка на ошибку записи (например, нет прав или места на диске)
+	err = os.WriteFile(outputFile, []byte(modifiedText), 0o644)
 	if err != nil {
-		fmt.Println("error", err)
+		fmt.Printf("❌ Ошибка: Не удалось сохранить результат в файл '%s'.\n", outputFile)
 		return
 	}
+
+	// 4. Если код дошел сюда, значит всё прошло идеально!
+	fmt.Printf("✅ Готово! Можешь проверять файл '%s'\n", outputFile)
 }
